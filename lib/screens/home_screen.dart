@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isRunning = false;
   bool isPaused = false;
   int totalPomodoros = 0;
+  int round = 0;
   Timer? timer;
 
   void onTick(Timer timer) {
@@ -23,6 +24,10 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         totalSeconds = twentyFiveMinutes;
         totalPomodoros++;
+        if (totalPomodoros == 12) {
+          round++;
+          totalPomodoros = 0;
+        }
         isRunning = false;
         isPaused = false;
       });
@@ -177,27 +182,52 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        const Text(
-                          "Pomodoros",
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Color(0xFFE64D3D), // 오렌지 레드 글자 색상
-                            fontWeight: FontWeight.w500,
-                          ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "$round/4",
+                              style: const TextStyle(
+                                fontSize: 27,
+                                color: Colors.white54,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const Text(
+                              "ROUND",
+                              style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          "$totalPomodoros",
-                          style: const TextStyle(
-                            fontSize: 50,
-                            color: Color(0xFFE64D3D), // 오렌지 레드 글자 색상
-                            fontWeight: FontWeight.w600,
-                          ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "$totalPomodoros/12",
+                              style: const TextStyle(
+                                fontSize: 27,
+                                color: Colors.white54, // 오렌지 레드 글자 색상
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const Text(
+                              "GOAL",
+                              style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.white, // 오렌지 레드 글자 색상
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
