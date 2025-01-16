@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flip_board/flip_clock.dart';
 import 'package:flutter/material.dart';
-import 'package:flip_board/flip_board.dart';
+import 'package:timed_widget_slider/timed_widget_slider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +18,45 @@ class _HomeScreenState extends State<HomeScreen> {
   int totalPomodoros = 0;
   int round = 0;
   Timer? timer;
+  final List<int> timeOptions = [15, 20, 25, 30, 35];
+
+  ScrollController? _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController = ScrollController(
+        initialScrollOffset: _calculateInitialScrollOffset(),
+      );
+      setState(() {}); // 상태 갱신
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  double _calculateInitialScrollOffset() {
+    final selectedIndex =
+        timeOptions.indexOf(totalSeconds ~/ 60); // 현재 선택된 값의 인덱스
+    const itemWidth = 80.0; // 각 항목의 가로 크기 (마진 포함)
+    final screenWidth = MediaQuery.of(context).size.width; // 화면 너비
+    return (selectedIndex * itemWidth) - (screenWidth / 2 - itemWidth / 2);
+  }
+
+  void _scrollToIndex(int index) {
+    const itemWidth = 80.0; // 각 항목의 가로 크기 (마진 포함)
+    final screenWidth = MediaQuery.of(context).size.width; // 화면 너비
+    final offset = (index * itemWidth) - (screenWidth / 2 - itemWidth / 2);
+
+    _scrollController?.animateTo(
+      offset,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
 
   void onTick(Timer timer) {
     if (totalSeconds <= 0) {
@@ -144,6 +183,64 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Color(0xFFE64D3D),
                           letterSpacing: 28.0,
                         ),
+                      ),
+              ),
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: Center(
+              child: SizedBox(
+                height: 60,
+                child: _scrollController == null
+                    ? const CircularProgressIndicator(
+                        color: Colors.white) // 로딩 화면
+                    : ListView.builder(
+                        controller: _scrollController,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: timeOptions.length,
+                        itemBuilder: (context, index) {
+                          final time = timeOptions[index];
+                          final isSelected = (totalSeconds ~/ 60) == time;
+
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                totalSeconds = time * 60; // 선택된 시간을 업데이트
+                              });
+                              _scrollToIndex(index); // 선택된 항목을 중앙으로 이동
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? Colors.white
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.white.withOpacity(0.5),
+                                  width: 2,
+                                ),
+                              ),
+                              child: Text(
+                                "$time",
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: isSelected
+                                      ? const Color(0xFFE64D3D)
+                                      : Colors.white,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
               ),
             ),

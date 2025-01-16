@@ -200,6 +200,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.2"
+  timed_widget_slider:
+    dependency: "direct main"
+    description:
+      name: timed_widget_slider
+      sha256: "7a7bcf3919ddf3b345ff042cb0fcfee8dbe98b03474c6374ad9b4801212da0ed"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   vector_math:
     dependency: transitive
     description:
