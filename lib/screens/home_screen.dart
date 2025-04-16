@@ -148,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           const Padding(
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            padding: EdgeInsets.symmetric(vertical: 50, horizontal: 20),
             child: Row(
               children: [
                 Text(
